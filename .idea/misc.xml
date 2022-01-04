@@ -3,9 +3,10 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="app/src/main/res/drawable/ic_description.xml" value="0.24166666666666667" />
         <entry key="app/src/main/res/layout/add_transaction_fragment.xml" value="0.2222222222222222" />
         <entry key="app/src/main/res/layout/home_fragment.xml" value="0.24391891891891893" />
-        <entry key="app/src/main/res/layout/transaction_layout.xml" value="0.23377926421404682" />
+        <entry key="app/src/main/res/layout/transaction_layout.xml" value="0.25" />
       </map>
     </option>
   </component>

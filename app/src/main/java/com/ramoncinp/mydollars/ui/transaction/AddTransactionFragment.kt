@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.ramoncinp.mydollars.data.database.transactions.Transaction
@@ -48,14 +49,24 @@ class AddTransactionFragment : Fragment() {
         binding.expenseButton.setOnClickListener {
             if (validateData()) createTransaction(TransactionType.EXPENSE)
         }
+        binding.descriptionEt.addTextChangedListener {
+            if (binding.descriptionInputLayout.error != null) {
+                binding.descriptionInputLayout.error = null
+            }
+        }
+        binding.amountEt.addTextChangedListener {
+            if (binding.amountInputLayout.error != null) {
+                binding.amountInputLayout.error = null
+            }
+        }
     }
 
     private fun validateData(): Boolean {
         val descriptionValid = binding.descriptionEt.text?.isNotEmpty() ?: false
-        if (descriptionValid.not()) binding.descriptionEt.error = "Field mandatory"
+        if (descriptionValid.not()) binding.descriptionInputLayout.error = "Field mandatory"
 
         val amountValid = binding.amountEt.text?.isNotEmpty() ?: false
-        if (amountValid.not()) binding.amountEt.error = "Field mandatory"
+        if (amountValid.not()) binding.amountInputLayout.error = "Field mandatory"
 
         return descriptionValid && amountValid
     }
