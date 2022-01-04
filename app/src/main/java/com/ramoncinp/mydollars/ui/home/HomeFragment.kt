@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.DividerItemDecoration
 import com.ramoncinp.mydollars.data.database.transactions.Transaction
 import com.ramoncinp.mydollars.databinding.HomeFragmentBinding
 import com.ramoncinp.mydollars.domain.formatters.toFormattedAmount
@@ -19,7 +20,7 @@ class HomeFragment : Fragment() {
     private val binding
         get() = _binding!!
 
-    private lateinit var adapter: TransactionsAdapter
+    private lateinit var transactionsAdapter: TransactionsAdapter
 
     private val viewModel: HomeViewModel by viewModels()
 
@@ -46,8 +47,11 @@ class HomeFragment : Fragment() {
             )
         }
 
-        adapter = TransactionsAdapter()
-        binding.transactionsList.adapter = adapter
+        transactionsAdapter = TransactionsAdapter()
+        binding.transactionsList.apply {
+            adapter = transactionsAdapter
+            addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
+        }
     }
 
     private fun initObservers() {
@@ -68,6 +72,6 @@ class HomeFragment : Fragment() {
     }
 
     private fun setTransactionsData(transactions: List<Transaction>) {
-        adapter.submitList(transactions)
+        transactionsAdapter.submitList(transactions)
     }
 }

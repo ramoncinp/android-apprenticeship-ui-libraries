@@ -7,8 +7,8 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.ramoncinp.mydollars.domain.formatters.simpleDateFormatter
 import com.ramoncinp.mydollars.domain.formatters.toFormattedAmount
+import com.ramoncinp.mydollars.domain.formatters.toFormattedDate
 import java.util.*
 
 class TransactionsAdapter : ListAdapter<Transaction,
@@ -28,9 +28,12 @@ class TransactionsAdapter : ListAdapter<Transaction,
 
         fun bind(item: Transaction) {
             val amountText = "\$${item.amount.toFormattedAmount()}"
-            binding.amountTv.text = amountText
-            binding.descriptionTv.text = item.description
-            binding.datetimeTv.text = simpleDateFormatter().format(Date(item.date))
+            binding.apply {
+                amountTv.text = amountText
+                descriptionTv.text = item.description
+                datetimeTv.text = Date(item.date).toFormattedDate()
+                typeTv.text = item.type.uppercase()
+            }
         }
 
         companion object {
