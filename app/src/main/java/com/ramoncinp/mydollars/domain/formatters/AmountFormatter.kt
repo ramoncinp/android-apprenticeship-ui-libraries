@@ -4,4 +4,4 @@ import java.text.DecimalFormat
 
 private val decimalFormat = DecimalFormat("###,###,##0.00")
 
-fun Double.toFormattedAmount() = decimalFormat.format(this)
+fun Double.toFormattedAmount(): String = decimalFormat.format(this)
