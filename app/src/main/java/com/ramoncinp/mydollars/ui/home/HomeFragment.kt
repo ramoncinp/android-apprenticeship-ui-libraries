@@ -10,6 +10,7 @@ import com.ramoncinp.mydollars.data.TransactionsManager
 import com.ramoncinp.mydollars.data.models.Transaction
 import com.ramoncinp.mydollars.databinding.HomeFragmentBinding
 import com.ramoncinp.mydollars.domain.formatters.toFormattedAmount
+import timber.log.Timber
 
 class HomeFragment : Fragment() {
 
@@ -29,6 +30,7 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initViews()
+        Timber.d("Transactions -> ${TransactionsManager.transactions}")
     }
 
     override fun onDestroyView() {

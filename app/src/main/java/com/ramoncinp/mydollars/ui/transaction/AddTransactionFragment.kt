@@ -1,19 +1,36 @@
 package com.ramoncinp.mydollars.ui.transaction
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import androidx.fragment.app.Fragment
 import android.view.View
-import com.ramoncinp.mydollars.R
+import android.view.ViewGroup
+import androidx.core.widget.addTextChangedListener
+import androidx.navigation.fragment.findNavController
 import com.ramoncinp.mydollars.data.TransactionsManager
 import com.ramoncinp.mydollars.data.models.Transaction
 import com.ramoncinp.mydollars.data.models.TransactionType
+import com.ramoncinp.mydollars.databinding.AddTransactionFragmentBinding
 import timber.log.Timber
 
-class AddTransactionFragment : Fragment(R.layout.add_transaction_fragment) {
+class AddTransactionFragment : Fragment() {
+
+    private var _binding: AddTransactionFragmentBinding? = null
+    private val binding
+        get() = _binding!!
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         getCurrentBalance()
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        _binding = AddTransactionFragmentBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     private fun getCurrentBalance() {
@@ -24,20 +41,46 @@ class AddTransactionFragment : Fragment(R.layout.add_transaction_fragment) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        // TODO: Initialize views
+        initViews()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     private fun initViews() {
-        // TODO: Take views references and set them
+        binding.incomeButton.setOnClickListener {
+            if (validateData()) createTransaction(TransactionType.INCOME)
+        }
+        binding.expenseButton.setOnClickListener {
+            if (validateData()) createTransaction(TransactionType.EXPENSE)
+        }
+        binding.descriptionEt.addTextChangedListener {
+            if (binding.descriptionInputLayout.error != null) {
+                binding.descriptionInputLayout.error = null
+            }
+        }
+        binding.amountEt.addTextChangedListener {
+            if (binding.amountInputLayout.error != null) {
+                binding.amountInputLayout.error = null
+            }
+        }
     }
 
     private fun validateData(): Boolean {
-        return false
+        val descriptionValid = binding.descriptionEt.text?.isNotEmpty() ?: false
+        if (descriptionValid.not()) binding.descriptionInputLayout.error = "Field mandatory"
+
+        val amountValid = binding.amountEt.text?.isNotEmpty() ?: false
+        if (amountValid.not()) binding.amountInputLayout.error = "Field mandatory"
+
+        return descriptionValid && amountValid
     }
 
     private fun createTransaction(transactionType: TransactionType) {
-        val description = "description"
-        val amount = 0.0
+        val description = binding.descriptionEt.text.toString()
+        val amount = binding.amountEt.text.toString().toDouble()
         val transaction = Transaction(
             description = description,
             amount = amount,
@@ -50,5 +93,7 @@ class AddTransactionFragment : Fragment(R.layout.add_transaction_fragment) {
             TransactionType.INCOME -> TransactionsManager.balance.plus(amount)
             TransactionType.EXPENSE -> TransactionsManager.balance.minus(amount)
         }
+
+        findNavController().navigateUp()
     }
 }
