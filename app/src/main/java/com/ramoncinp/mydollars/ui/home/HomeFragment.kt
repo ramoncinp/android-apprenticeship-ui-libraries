@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import androidx.fragment.app.Fragment
 import android.view.View
 import android.view.ViewGroup
+import androidx.navigation.fragment.findNavController
 import com.ramoncinp.mydollars.data.TransactionsManager
 import com.ramoncinp.mydollars.data.models.Transaction
 import com.ramoncinp.mydollars.databinding.HomeFragmentBinding
@@ -36,6 +37,7 @@ class HomeFragment : Fragment() {
     }
 
     private fun initViews() {
+        setViewListeners()
         setBalanceData(TransactionsManager.balance)
         setTransactionsData(TransactionsManager.transactions)
     }
@@ -46,10 +48,23 @@ class HomeFragment : Fragment() {
     }
 
     private fun setTransactionsData(transactions: List<Transaction>) {
-        binding.noTransactionsTv.visibility = View.VISIBLE
+        showNoTransactions()
     }
 
     private fun showNoTransactions() {
-        // TODO: Show in UI that there are no transactions
+        binding.noTransactionsTv.visibility = View.VISIBLE
+    }
+
+    private fun setViewListeners() {
+        binding.addTransactionButton.setOnClickListener { navigateToAddTransaction() }
+    }
+
+    private fun navigateToAddTransaction() {
+        val currentBalance = TransactionsManager.balance
+        findNavController().navigate(
+            HomeFragmentDirections.actionHomeFragmentToAddTransactionFragment(
+                currentBalance.toFloat()
+            )
+        )
     }
 }

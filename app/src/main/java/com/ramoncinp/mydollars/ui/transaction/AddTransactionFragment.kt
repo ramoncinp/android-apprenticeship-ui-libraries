@@ -7,8 +7,20 @@ import com.ramoncinp.mydollars.R
 import com.ramoncinp.mydollars.data.TransactionsManager
 import com.ramoncinp.mydollars.data.models.Transaction
 import com.ramoncinp.mydollars.data.models.TransactionType
+import timber.log.Timber
 
 class AddTransactionFragment : Fragment(R.layout.add_transaction_fragment) {
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        getCurrentBalance()
+    }
+
+    private fun getCurrentBalance() {
+        val arguments = AddTransactionFragmentArgs.fromBundle(requireArguments())
+        val currentBalance = arguments.currentBalance
+        Timber.d("Current balance is $currentBalance")
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
