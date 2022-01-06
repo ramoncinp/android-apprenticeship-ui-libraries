@@ -9,7 +9,6 @@ import com.ramoncinp.mydollars.R
 import com.ramoncinp.mydollars.data.TransactionsManager
 import com.ramoncinp.mydollars.data.models.Transaction
 import com.ramoncinp.mydollars.databinding.HomeFragmentBinding
-import com.ramoncinp.mydollars.domain.formatters.toFormattedAmount
 
 class HomeFragment : Fragment(R.layout.home_fragment) {
 
@@ -23,12 +22,7 @@ class HomeFragment : Fragment(R.layout.home_fragment) {
         savedInstanceState: Bundle?
     ): View {
         _binding = HomeFragmentBinding.inflate(inflater, container, false)
-        setVariablesToBinding()
         return binding.root
-    }
-
-    private fun setVariablesToBinding() {
-        binding.transactionsManager = TransactionsManager
     }
 
     override fun onDestroyView() {
@@ -38,25 +32,17 @@ class HomeFragment : Fragment(R.layout.home_fragment) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        // TODO: Init views
+        initViews()
     }
 
     private fun initViews() {
-        // TODO: Take views references and set them
-        setBalanceData(TransactionsManager.balance)
+        setVariablesToBinding()
         setTransactionsData(TransactionsManager.transactions)
     }
 
-    private fun setBalanceData(balance: Double) {
-        val formattedBalance = "\$${balance.toFormattedAmount()}"
-        // TODO: Show balance data in UI
+    private fun setVariablesToBinding() {
+        binding.transactionsManager = TransactionsManager
     }
 
-    private fun setTransactionsData(transactions: List<Transaction>) {
-
-    }
-
-    private fun showNoTransactions() {
-        // TODO: Show in UI that there are no transactions
-    }
+    private fun setTransactionsData(transactions: List<Transaction>) {}
 }
