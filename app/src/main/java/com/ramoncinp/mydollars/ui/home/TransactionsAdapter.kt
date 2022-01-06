@@ -5,6 +5,8 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.ramoncinp.mydollars.R
 import com.ramoncinp.mydollars.data.models.Transaction
 import com.ramoncinp.mydollars.databinding.TransactionLayoutBinding
 import com.ramoncinp.mydollars.domain.formatters.toFormattedAmount
@@ -34,6 +36,14 @@ class TransactionsAdapter : ListAdapter<Transaction,
                 datetimeTv.text = Date(item.date).toFormattedDate()
                 typeTv.text = item.type.uppercase()
             }
+            showImage(item)
+        }
+
+        private fun showImage(item: Transaction) {
+            val image = "https://picsum.photos/seed/${item.date}/200"
+            Glide.with(binding.root).load(image)
+                .placeholder(R.drawable.ic_cash)
+                .into(binding.transactionImage)
         }
 
         companion object {

@@ -5,6 +5,20 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/transaction_image"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/medium_margin"
+        android:layout_marginTop="@dimen/small_margin"
+        android:layout_marginBottom="@dimen/small_margin"
+        android:background="@color/primaryColor"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App.CornerSize50Percent"
+        tools:srcCompat="@drawable/ic_cash" />
+
     <TextView
         android:id="@+id/amount_tv"
         android:layout_width="wrap_content"
@@ -14,7 +28,7 @@
         android:textColor="@android:color/black"
         android:textSize="@dimen/title"
         android:textStyle="italic"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/transaction_image"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="$36.00" />
 
@@ -24,13 +38,12 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/medium_margin"
         android:layout_marginTop="@dimen/small_margin"
-        android:layout_marginEnd="@dimen/medium_margin"
         android:layout_marginBottom="@dimen/small_margin"
         android:textColor="@android:color/black"
         android:textSize="@dimen/small_text"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/datetime_tv"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/transaction_image"
         app:layout_constraintTop_toBottomOf="@id/amount_tv"
         tools:text="Chinese food from San Francisco 🥡" />
 
