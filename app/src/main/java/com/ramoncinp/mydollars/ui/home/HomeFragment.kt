@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.DividerItemDecoration
 import com.ramoncinp.mydollars.data.TransactionsManager
 import com.ramoncinp.mydollars.data.models.Transaction
 import com.ramoncinp.mydollars.databinding.HomeFragmentBinding
@@ -41,7 +42,7 @@ class HomeFragment : Fragment() {
     private fun initViews() {
         setViewListeners()
         setBalanceData(TransactionsManager.balance)
-        setTransactionsData(TransactionsManager.transactions)
+        setTransactionsData(orderTransactions(TransactionsManager.transactions))
     }
 
     private fun setBalanceData(balance: Double) {
@@ -49,8 +50,22 @@ class HomeFragment : Fragment() {
         binding.balanceTv.text = formattedBalance
     }
 
+    private fun orderTransactions(transactions: List<Transaction>) =
+        transactions.sortedByDescending { it.date }
+
     private fun setTransactionsData(transactions: List<Transaction>) {
-        showNoTransactions()
+        if (transactions.isEmpty()) {
+            showNoTransactions()
+            return
+        }
+
+        val transactionsAdapter = TransactionsAdapter()
+        binding.transactionsList.apply {
+            adapter = transactionsAdapter
+            addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
+        }
+
+        transactionsAdapter.submitList(transactions)
     }
 
     private fun showNoTransactions() {
