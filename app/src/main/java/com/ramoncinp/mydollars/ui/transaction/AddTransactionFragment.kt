@@ -1,5 +1,6 @@
 package com.ramoncinp.mydollars.ui.transaction
 
+import android.animation.Animator
 import android.os.Bundle
 import android.view.LayoutInflater
 import androidx.fragment.app.Fragment
@@ -11,6 +12,7 @@ import com.ramoncinp.mydollars.data.TransactionsManager
 import com.ramoncinp.mydollars.data.models.Transaction
 import com.ramoncinp.mydollars.data.models.TransactionType
 import com.ramoncinp.mydollars.databinding.AddTransactionFragmentBinding
+import com.ramoncinp.mydollars.utils.hideKeyboard
 import timber.log.Timber
 
 class AddTransactionFragment : Fragment() {
@@ -94,6 +96,24 @@ class AddTransactionFragment : Fragment() {
             TransactionType.EXPENSE -> TransactionsManager.balance.minus(amount)
         }
 
-        findNavController().navigateUp()
+        onTransactionCreated()
+    }
+
+    private fun onTransactionCreated() {
+        binding.animationView.addAnimatorListener(object : Animator.AnimatorListener {
+            override fun onAnimationStart(p0: Animator?) {
+                requireActivity().hideKeyboard()
+            }
+
+            override fun onAnimationEnd(p0: Animator?) {
+                findNavController().navigateUp()
+            }
+
+            override fun onAnimationCancel(p0: Animator?) {}
+            override fun onAnimationRepeat(p0: Animator?) {}
+        })
+
+        binding.animationView.playAnimation()
+        binding.animationView.visibility = View.VISIBLE
     }
 }
