@@ -9,4 +9,5 @@
     <string name="expense">Expense</string>
     <string name="income">Income</string>
     <string name="add_transaction">Add transaction</string>
+    <string name="no_transactions">No transactions</string>
 </resources>
