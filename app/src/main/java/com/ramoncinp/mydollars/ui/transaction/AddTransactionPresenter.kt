@@ -6,10 +6,10 @@ import com.ramoncinp.mydollars.data.models.TransactionType
 
 class AddTransactionPresenter(
     private val transactionsManager: TransactionsManager,
-    private val addTransactionInteractor: AddTransactionInteractor
-) {
+    private val addTransactionInteractor: AddTransactionContract.View
+) : AddTransactionContract.Presenter {
 
-    fun addTransaction(description: String, amount: Double, type: TransactionType) {
+    override fun addTransaction(description: String, amount: Double, type: TransactionType) {
         val transaction = Transaction(
             description = description,
             amount = amount,
@@ -26,9 +26,9 @@ class AddTransactionPresenter(
         addTransactionInteractor.transactionCreated()
     }
 
-    fun validateDescription(description: String) = description.isNotEmpty()
+    override fun validateDescription(description: String) = description.isNotEmpty()
 
-    fun validateAmount(amount: String) = try {
+    override fun validateAmount(amount: String) = try {
         val amountValue = amount.toDouble()
         amountValue > 0
     } catch (e: Exception) {

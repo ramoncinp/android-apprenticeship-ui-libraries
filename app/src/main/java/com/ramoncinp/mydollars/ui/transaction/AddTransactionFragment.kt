@@ -15,7 +15,7 @@ import com.ramoncinp.mydollars.databinding.AddTransactionFragmentBinding
 import com.ramoncinp.mydollars.utils.hideKeyboard
 import timber.log.Timber
 
-class AddTransactionFragment : Fragment(), AddTransactionInteractor {
+class AddTransactionFragment : Fragment(), AddTransactionContract.View {
 
     private val addTransactionPresenter = AddTransactionPresenter(TransactionsManager, this)
     private var _binding: AddTransactionFragmentBinding? = null
