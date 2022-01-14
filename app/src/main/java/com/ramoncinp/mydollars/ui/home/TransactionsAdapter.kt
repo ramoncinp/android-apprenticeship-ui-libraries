@@ -58,10 +58,10 @@ class TransactionsAdapter : ListAdapter<Transaction,
 
 class StationsDiffCallback : DiffUtil.ItemCallback<Transaction>() {
     override fun areItemsTheSame(oldItem: Transaction, newItem: Transaction): Boolean {
-        return oldItem == newItem
+        return oldItem.id == newItem.id
     }
 
     override fun areContentsTheSame(oldItem: Transaction, newItem: Transaction): Boolean {
-        return oldItem.id == newItem.id
+        return oldItem == newItem
     }
 }

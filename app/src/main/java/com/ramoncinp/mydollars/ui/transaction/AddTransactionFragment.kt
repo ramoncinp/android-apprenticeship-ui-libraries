@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.widget.addTextChangedListener
 import androidx.navigation.fragment.findNavController
+import com.ramoncinp.mydollars.R
 import com.ramoncinp.mydollars.data.TransactionsManager
 import com.ramoncinp.mydollars.data.models.Transaction
 import com.ramoncinp.mydollars.data.models.TransactionType
@@ -113,6 +114,7 @@ class AddTransactionFragment : Fragment() {
             override fun onAnimationRepeat(p0: Animator?) {}
         })
 
+        binding.animationView.setAnimation(R.raw.anim_money)
         binding.animationView.playAnimation()
         binding.animationView.visibility = View.VISIBLE
     }
