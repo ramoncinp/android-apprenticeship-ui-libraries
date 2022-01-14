@@ -4,12 +4,12 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.ramoncinp.mydollars.data.TransactionsManager
 import com.ramoncinp.mydollars.data.models.Transaction
 import com.ramoncinp.mydollars.data.models.TransactionType
+import com.ramoncinp.mydollars.domain.usecases.AddTransactionUseCase
 
 class AddTransactionViewModel(
-    private val transactionsManager: TransactionsManager
+    private val addTransactionUseCase: AddTransactionUseCase
 ) : ViewModel() {
 
     private val _transactionCreated = MutableLiveData<Boolean>()
@@ -20,15 +20,10 @@ class AddTransactionViewModel(
         val transaction = Transaction(
             description = description,
             amount = amount,
-            type = type.name
+            type = type
         )
 
-        transactionsManager.transactions.add(transaction)
-
-        transactionsManager.balance = when (type) {
-            TransactionType.INCOME -> TransactionsManager.balance.plus(amount)
-            TransactionType.EXPENSE -> TransactionsManager.balance.minus(amount)
-        }
+        addTransactionUseCase.invoke(transaction)
 
         _transactionCreated.value = true
     }
@@ -42,10 +37,10 @@ class AddTransactionViewModel(
         false
     }
 
-    class Factory(private val transactionsManager: TransactionsManager) :
+    class Factory(private val addTransactionUseCase: AddTransactionUseCase) :
         ViewModelProvider.Factory {
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
-            return AddTransactionViewModel(transactionsManager) as T
+            return AddTransactionViewModel(addTransactionUseCase) as T
         }
     }
 }

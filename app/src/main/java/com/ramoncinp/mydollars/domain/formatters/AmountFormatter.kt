@@ -1,7 +1,7 @@
 package com.ramoncinp.mydollars.domain.formatters
 
-import java.text.DecimalFormat
+import java.text.NumberFormat
 
-private val decimalFormat = DecimalFormat("###,###,##0.00")
-
-fun Double.toFormattedAmount(): String = decimalFormat.format(this)
+fun Double.formatAsCurrency(): String {
+    return NumberFormat.getCurrencyInstance().format(this)
+}

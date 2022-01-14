@@ -9,7 +9,7 @@ import com.bumptech.glide.Glide
 import com.ramoncinp.mydollars.R
 import com.ramoncinp.mydollars.data.models.Transaction
 import com.ramoncinp.mydollars.databinding.TransactionLayoutBinding
-import com.ramoncinp.mydollars.domain.formatters.toFormattedAmount
+import com.ramoncinp.mydollars.domain.formatters.formatAsCurrency
 import com.ramoncinp.mydollars.domain.formatters.toFormattedDate
 import java.util.*
 
@@ -29,12 +29,12 @@ class TransactionsAdapter : ListAdapter<Transaction,
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(item: Transaction) {
-            val amountText = "\$${item.amount.toFormattedAmount()}"
+            val amountText = item.amount.formatAsCurrency()
             binding.apply {
                 amountTv.text = amountText
                 descriptionTv.text = item.description
                 datetimeTv.text = Date(item.date).toFormattedDate()
-                typeTv.text = item.type.uppercase()
+                typeTv.text = item.type.name.uppercase()
             }
             showImage(item)
         }

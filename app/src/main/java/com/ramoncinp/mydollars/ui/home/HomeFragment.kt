@@ -11,12 +11,18 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import com.ramoncinp.mydollars.data.TransactionsManager
 import com.ramoncinp.mydollars.data.models.Transaction
 import com.ramoncinp.mydollars.databinding.HomeFragmentBinding
+import com.ramoncinp.mydollars.domain.usecases.GetBalanceUseCase
+import com.ramoncinp.mydollars.domain.usecases.GetTransactionsUseCase
 
 class HomeFragment : Fragment() {
 
     private val viewModel: HomeViewModel by viewModels(
         factoryProducer = {
-            HomeViewModel.Factory(TransactionsManager)
+            val transactionsManager = TransactionsManager
+            HomeViewModel.Factory(
+                GetBalanceUseCase(transactionsManager),
+                GetTransactionsUseCase(transactionsManager)
+            )
         }
     )
 

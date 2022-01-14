@@ -13,6 +13,7 @@ import com.ramoncinp.mydollars.R
 import com.ramoncinp.mydollars.data.TransactionsManager
 import com.ramoncinp.mydollars.data.models.TransactionType
 import com.ramoncinp.mydollars.databinding.AddTransactionFragmentBinding
+import com.ramoncinp.mydollars.domain.usecases.AddTransactionUseCase
 import com.ramoncinp.mydollars.utils.hideKeyboard
 import timber.log.Timber
 
@@ -20,7 +21,11 @@ class AddTransactionFragment : Fragment() {
 
     private val viewModel: AddTransactionViewModel by viewModels(
         factoryProducer = {
-            AddTransactionViewModel.Factory(TransactionsManager)
+            AddTransactionViewModel.Factory(
+                AddTransactionUseCase(
+                    TransactionsManager
+                )
+            )
         }
     )
     private var _binding: AddTransactionFragmentBinding? = null

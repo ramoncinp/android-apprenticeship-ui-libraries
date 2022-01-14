@@ -10,5 +10,5 @@ data class Transaction(
     val date: Long = System.currentTimeMillis(),
     val description: String,
     val amount: Double,
-    val type: String
+    val type: TransactionType
 )
