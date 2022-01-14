@@ -6,10 +6,10 @@ import com.ramoncinp.mydollars.domain.formatters.toFormattedAmount
 
 class HomePresenter(
     private val transactionsManager: TransactionsManager,
-    private val homeInteractor: HomeInteractor
-) {
+    private val homeInteractor: HomeContract.View
+) : HomeContract.Presenter {
 
-    fun getBalanceData() {
+    override fun getBalanceData() {
         val balance = transactionsManager.balance
         val formattedBalance = "\$${balance.toFormattedAmount()}"
         homeInteractor.setBalanceData(formattedBalance)
@@ -18,7 +18,7 @@ class HomePresenter(
     private fun orderTransactions(transactions: List<Transaction>) =
         transactions.sortedByDescending { it.date }
 
-    fun getTransactions() {
+    override fun getTransactions() {
         val transactions = transactionsManager.transactions
         val orderedTransactions = orderTransactions(transactions)
 

@@ -11,7 +11,7 @@ import com.ramoncinp.mydollars.data.TransactionsManager
 import com.ramoncinp.mydollars.data.models.Transaction
 import com.ramoncinp.mydollars.databinding.HomeFragmentBinding
 
-class HomeFragment : Fragment(), HomeInteractor {
+class HomeFragment : Fragment(), HomeContract.View {
 
     private val homeController = HomePresenter(TransactionsManager, this)
 

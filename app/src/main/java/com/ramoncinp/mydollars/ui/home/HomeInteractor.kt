@@ -7,3 +7,16 @@ interface HomeInteractor {
     fun setTransactionsData(transactions: List<Transaction>)
     fun noTransactionsData()
 }
+
+interface HomeContract {
+    interface Presenter {
+        fun getBalanceData()
+        fun getTransactions()
+    }
+
+    interface View {
+        fun setBalanceData(balance: String)
+        fun setTransactionsData(transactions: List<Transaction>)
+        fun noTransactionsData()
+    }
+}
