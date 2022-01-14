@@ -5,19 +5,25 @@ import android.view.LayoutInflater
 import androidx.fragment.app.Fragment
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import com.ramoncinp.mydollars.data.TransactionsManager
 import com.ramoncinp.mydollars.data.models.Transaction
 import com.ramoncinp.mydollars.databinding.HomeFragmentBinding
 
-class HomeFragment : Fragment(), HomeInteractor {
+class HomeFragment : Fragment() {
 
-    private val homeController = HomePresenter(TransactionsManager, this)
+    private val viewModel: HomeViewModel by viewModels(
+        factoryProducer = {
+            HomeViewModel.Factory(TransactionsManager)
+        }
+    )
 
     private var _binding: HomeFragmentBinding? = null
     private val binding
         get() = _binding!!
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -31,6 +37,7 @@ class HomeFragment : Fragment(), HomeInteractor {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initViews()
+        initObservers()
         getData()
     }
 
@@ -48,15 +55,29 @@ class HomeFragment : Fragment(), HomeInteractor {
     }
 
     private fun getData() {
-        homeController.getBalanceData()
-        homeController.getTransactions()
+        viewModel.getBalanceData()
+        viewModel.getTransactions()
     }
 
-    override fun setBalanceData(balance: String) {
+    private fun initObservers() {
+        viewModel.balanceData.observe(this) { balance ->
+            setBalanceData(balance)
+        }
+
+        viewModel.transactionsData.observe(this) { transactions ->
+            if (transactions.isEmpty()) {
+                showNoTransactions()
+            } else {
+                setTransactionsData(transactions)
+            }
+        }
+    }
+
+    private fun setBalanceData(balance: String) {
         binding.balanceTv.text = balance
     }
 
-    override fun setTransactionsData(transactions: List<Transaction>) {
+    private fun setTransactionsData(transactions: List<Transaction>) {
         val transactionsAdapter = TransactionsAdapter()
         binding.transactionsList.apply {
             adapter = transactionsAdapter
@@ -64,10 +85,6 @@ class HomeFragment : Fragment(), HomeInteractor {
         }
 
         transactionsAdapter.submitList(transactions)
-    }
-
-    override fun noTransactionsData() {
-        showNoTransactions()
     }
 
     private fun showNoTransactions() {

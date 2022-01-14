@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.widget.addTextChangedListener
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.ramoncinp.mydollars.R
 import com.ramoncinp.mydollars.data.TransactionsManager
@@ -15,9 +16,13 @@ import com.ramoncinp.mydollars.databinding.AddTransactionFragmentBinding
 import com.ramoncinp.mydollars.utils.hideKeyboard
 import timber.log.Timber
 
-class AddTransactionFragment : Fragment(), AddTransactionInteractor {
+class AddTransactionFragment : Fragment() {
 
-    private val addTransactionPresenter = AddTransactionPresenter(TransactionsManager, this)
+    private val viewModel: AddTransactionViewModel by viewModels(
+        factoryProducer = {
+            AddTransactionViewModel.Factory(TransactionsManager)
+        }
+    )
     private var _binding: AddTransactionFragmentBinding? = null
     private val binding
         get() = _binding!!
@@ -45,11 +50,18 @@ class AddTransactionFragment : Fragment(), AddTransactionInteractor {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initViews()
+        initObservers()
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    private fun initObservers() {
+        viewModel.transactionCreated.observe(this) {
+            transactionCreated()
+        }
     }
 
     private fun initViews() {
@@ -73,11 +85,11 @@ class AddTransactionFragment : Fragment(), AddTransactionInteractor {
 
     private fun validateData(): Boolean {
         val description = binding.descriptionEt.text.toString()
-        val descriptionValid = addTransactionPresenter.validateDescription(description)
+        val descriptionValid = viewModel.validateDescription(description)
         if (descriptionValid.not()) binding.descriptionInputLayout.error = "Field mandatory"
 
         val amount = binding.amountEt.text.toString()
-        val amountValid = addTransactionPresenter.validateAmount(amount)
+        val amountValid = viewModel.validateAmount(amount)
         if (amountValid.not()) binding.amountInputLayout.error = "Amount not valid"
 
         return descriptionValid && amountValid
@@ -86,10 +98,10 @@ class AddTransactionFragment : Fragment(), AddTransactionInteractor {
     private fun createTransaction(transactionType: TransactionType) {
         val description = binding.descriptionEt.text.toString()
         val amount = binding.amountEt.text.toString().toDouble()
-        addTransactionPresenter.addTransaction(description, amount, transactionType)
+        viewModel.addTransaction(description, amount, transactionType)
     }
 
-    override fun transactionCreated() {
+    private fun transactionCreated() {
         binding.animationView.addAnimatorListener(object : Animator.AnimatorListener {
             override fun onAnimationStart(p0: Animator?) {
                 requireActivity().hideKeyboard()

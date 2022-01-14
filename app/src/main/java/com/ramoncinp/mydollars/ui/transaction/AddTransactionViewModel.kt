@@ -1,13 +1,20 @@
 package com.ramoncinp.mydollars.ui.transaction
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import com.ramoncinp.mydollars.data.TransactionsManager
 import com.ramoncinp.mydollars.data.models.Transaction
 import com.ramoncinp.mydollars.data.models.TransactionType
 
-class AddTransactionPresenter(
-    private val transactionsManager: TransactionsManager,
-    private val addTransactionInteractor: AddTransactionInteractor
-) {
+class AddTransactionViewModel(
+    private val transactionsManager: TransactionsManager
+) : ViewModel() {
+
+    private val _transactionCreated = MutableLiveData<Boolean>()
+    val transactionCreated: LiveData<Boolean>
+        get() = _transactionCreated
 
     fun addTransaction(description: String, amount: Double, type: TransactionType) {
         val transaction = Transaction(
@@ -23,7 +30,7 @@ class AddTransactionPresenter(
             TransactionType.EXPENSE -> TransactionsManager.balance.minus(amount)
         }
 
-        addTransactionInteractor.transactionCreated()
+        _transactionCreated.value = true
     }
 
     fun validateDescription(description: String) = description.isNotEmpty()
@@ -33,5 +40,12 @@ class AddTransactionPresenter(
         amountValue > 0
     } catch (e: Exception) {
         false
+    }
+
+    class Factory(private val transactionsManager: TransactionsManager) :
+        ViewModelProvider.Factory {
+        override fun <T : ViewModel> create(modelClass: Class<T>): T {
+            return AddTransactionViewModel(transactionsManager) as T
+        }
     }
 }
