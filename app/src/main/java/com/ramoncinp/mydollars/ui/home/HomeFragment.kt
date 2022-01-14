@@ -10,10 +10,10 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import com.ramoncinp.mydollars.data.TransactionsManager
 import com.ramoncinp.mydollars.data.models.Transaction
 import com.ramoncinp.mydollars.databinding.HomeFragmentBinding
-import com.ramoncinp.mydollars.domain.formatters.toFormattedAmount
-import timber.log.Timber
 
-class HomeFragment : Fragment() {
+class HomeFragment : Fragment(), HomeInteractor {
+
+    private val homeController = HomePresenter(TransactionsManager, this)
 
     private var _binding: HomeFragmentBinding? = null
     private val binding
@@ -31,7 +31,7 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initViews()
-        Timber.d("Transactions -> ${TransactionsManager.transactions}")
+        getData()
     }
 
     override fun onDestroyView() {
@@ -41,24 +41,22 @@ class HomeFragment : Fragment() {
 
     private fun initViews() {
         setViewListeners()
-        setBalanceData(TransactionsManager.balance)
-        setTransactionsData(orderTransactions(TransactionsManager.transactions))
     }
 
-    private fun setBalanceData(balance: Double) {
-        val formattedBalance = "\$${balance.toFormattedAmount()}"
-        binding.balanceTv.text = formattedBalance
+    private fun setViewListeners() {
+        binding.addTransactionButton.setOnClickListener { navigateToAddTransaction() }
     }
 
-    private fun orderTransactions(transactions: List<Transaction>) =
-        transactions.sortedByDescending { it.date }
+    private fun getData() {
+        homeController.getBalanceData()
+        homeController.getTransactions()
+    }
 
-    private fun setTransactionsData(transactions: List<Transaction>) {
-        if (transactions.isEmpty()) {
-            showNoTransactions()
-            return
-        }
+    override fun setBalanceData(balance: String) {
+        binding.balanceTv.text = balance
+    }
 
+    override fun setTransactionsData(transactions: List<Transaction>) {
         val transactionsAdapter = TransactionsAdapter()
         binding.transactionsList.apply {
             adapter = transactionsAdapter
@@ -68,12 +66,12 @@ class HomeFragment : Fragment() {
         transactionsAdapter.submitList(transactions)
     }
 
-    private fun showNoTransactions() {
-        binding.noTransactionsTv.visibility = View.VISIBLE
+    override fun noTransactionsData() {
+        showNoTransactions()
     }
 
-    private fun setViewListeners() {
-        binding.addTransactionButton.setOnClickListener { navigateToAddTransaction() }
+    private fun showNoTransactions() {
+        binding.noTransactionsTv.visibility = View.VISIBLE
     }
 
     private fun navigateToAddTransaction() {

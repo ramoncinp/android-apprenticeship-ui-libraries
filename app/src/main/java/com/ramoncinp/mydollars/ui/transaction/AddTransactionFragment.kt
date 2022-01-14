@@ -10,14 +10,14 @@ import androidx.core.widget.addTextChangedListener
 import androidx.navigation.fragment.findNavController
 import com.ramoncinp.mydollars.R
 import com.ramoncinp.mydollars.data.TransactionsManager
-import com.ramoncinp.mydollars.data.models.Transaction
 import com.ramoncinp.mydollars.data.models.TransactionType
 import com.ramoncinp.mydollars.databinding.AddTransactionFragmentBinding
 import com.ramoncinp.mydollars.utils.hideKeyboard
 import timber.log.Timber
 
-class AddTransactionFragment : Fragment() {
+class AddTransactionFragment : Fragment(), AddTransactionInteractor {
 
+    private val addTransactionPresenter = AddTransactionPresenter(TransactionsManager, this)
     private var _binding: AddTransactionFragmentBinding? = null
     private val binding
         get() = _binding!!
@@ -72,11 +72,13 @@ class AddTransactionFragment : Fragment() {
     }
 
     private fun validateData(): Boolean {
-        val descriptionValid = binding.descriptionEt.text?.isNotEmpty() ?: false
+        val description = binding.descriptionEt.text.toString()
+        val descriptionValid = addTransactionPresenter.validateDescription(description)
         if (descriptionValid.not()) binding.descriptionInputLayout.error = "Field mandatory"
 
-        val amountValid = binding.amountEt.text?.isNotEmpty() ?: false
-        if (amountValid.not()) binding.amountInputLayout.error = "Field mandatory"
+        val amount = binding.amountEt.text.toString()
+        val amountValid = addTransactionPresenter.validateAmount(amount)
+        if (amountValid.not()) binding.amountInputLayout.error = "Amount not valid"
 
         return descriptionValid && amountValid
     }
@@ -84,23 +86,10 @@ class AddTransactionFragment : Fragment() {
     private fun createTransaction(transactionType: TransactionType) {
         val description = binding.descriptionEt.text.toString()
         val amount = binding.amountEt.text.toString().toDouble()
-        val transaction = Transaction(
-            description = description,
-            amount = amount,
-            type = transactionType.name
-        )
-
-        TransactionsManager.transactions.add(transaction)
-
-        TransactionsManager.balance = when (transactionType) {
-            TransactionType.INCOME -> TransactionsManager.balance.plus(amount)
-            TransactionType.EXPENSE -> TransactionsManager.balance.minus(amount)
-        }
-
-        onTransactionCreated()
+        addTransactionPresenter.addTransaction(description, amount, transactionType)
     }
 
-    private fun onTransactionCreated() {
+    override fun transactionCreated() {
         binding.animationView.addAnimatorListener(object : Animator.AnimatorListener {
             override fun onAnimationStart(p0: Animator?) {
                 requireActivity().hideKeyboard()
